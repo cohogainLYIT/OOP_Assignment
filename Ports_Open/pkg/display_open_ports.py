@@ -30,14 +30,17 @@ def port_scan():
                          "Domain Name System (DNS)": 53, "Hypertext Transfer Protocol (HTTP)": 80,
                          "Network Time Protocol (NTP)": 123, "Border Gateway Protocol (BGP)": 179,
                          "HTTP Secure (HTTPS)": 443}
-    common_ports_list = list(common_ports_dict.values())
+    common_ports_val_list = list(common_ports_dict.values())
+    common_ports_key_list = list(common_ports_dict.keys())
 
     try:
-        for i in range(0, len(common_ports_list)):
+        for i in range(0, len(common_ports_val_list)):
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = sock.connect_ex((remoteServerIP, common_ports_list[i]))
+            result = sock.connect_ex((remoteServerIP, common_ports_val_list[i]))
             if result == 0:
-                print(list(common_ports_dict.keys())[list(common_ports_dict.values()).index(common_ports_list[i])])
+                print("Port " + str(common_ports_val_list[i]) +
+                      "\t\t" + common_ports_key_list[common_ports_val_list.index(common_ports_val_list[i])])
+
             sock.close()
     except KeyboardInterrupt:
         print("You pressed Ctrl+C")
