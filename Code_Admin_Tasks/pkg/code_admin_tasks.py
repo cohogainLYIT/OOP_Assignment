@@ -14,8 +14,8 @@ import time
 global username
 global password
 
-username = "cohogain"
-password = "Oberc1999?"
+username = "******"
+password = "******"
 
 
 # Open ssh connection to the device
@@ -32,12 +32,14 @@ def open_ssh_connection(ip):
         print("Authentication Error")
 
 
+# Close ssh connection the device
 def close_ssh_connection(connection):
     print("Closing connection...")
     time.sleep(1)
     connection.close()
 
 
+# send sudo apt-get update command to VM
 def apt_update(connection):
     print("\nUpdating...")
     stdin, stdout, stderr = connection.exec_command("echo " + password + "| sudo -S apt update")
@@ -46,6 +48,7 @@ def apt_update(connection):
     time.sleep(1)
 
 
+# send install curl command to VM
 def install_curl(connection):
     print("\nInstalling Curl...")
     stdin, stdout, stderr = connection.exec_command("echo " + password + "| sudo -S apt install curl")
@@ -54,12 +57,14 @@ def install_curl(connection):
     time.sleep(1)
 
 
+# create parent folder Labs with two child folders Lab1 and Lab2 within
 def mkdir_labs(connection):
     print("\nCreating directories...")
     stdin, stdout, stderr = connection.exec_command("mkdir Labs \n cd Labs \n mkdir Lab1 \n mkdir Lab2")
     stdin.write(password)
 
 
+# find when files in VM directory were last accessed
 def last_accessed(connection):
     print("\nFinding last accessed time...")
     stdin, stdout, stderr = connection.exec_command("ls -l --time=atime")
