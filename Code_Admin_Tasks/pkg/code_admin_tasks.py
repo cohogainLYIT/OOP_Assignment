@@ -11,9 +11,6 @@
 import paramiko
 import time
 
-global username
-global password
-
 
 # Open ssh connection to the host device using paramiko
 def open_ssh_connection(ip):
