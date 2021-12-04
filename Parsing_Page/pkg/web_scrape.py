@@ -8,8 +8,12 @@
 #                   of Apache2 web server being run on VM.
 #
 """
+from io import BytesIO
 
+import requests
 from bs4 import BeautifulSoup
+from PIL import Image
+import pprint
 
 
 # load and parse html file of webpage
@@ -19,8 +23,7 @@ def load_webpage(page):
 
     :return: BS html file
     """
-    with open(page, "r") as f:
-        return BeautifulSoup(f, "html.parser")
+    return BeautifulSoup(page, "html.parser")
 
 
 # find headings of loaded html file using section_header class
@@ -58,9 +61,23 @@ def word_occurrences(file, word):
     return count
 
 
+# scrapes and returns source of first image in webpage
+def scrape_image(file, url):
+    """
+
+    :param url:
+    :param file: html file of webpage
+    :return img_url: url to first image in webpage
+    """
+    img_src = file.find("img").attrs['src']
+    img_url = url+img_src
+
+    return img_url
+
+
 # load Apache2 server webpage
-web_page = "apache2_webserver.html"
-html_file = load_webpage(web_page)
+web_page = "http://192.168.0.59"
+html_file = load_webpage(requests.get(web_page).content)
 
 # find headings of HTML file
 headers = find_headings(html_file)
@@ -69,8 +86,18 @@ headers = find_headings(html_file)
 search_word = "Apache2"
 occurrences = word_occurrences(html_file, search_word)
 
+# scrape image
+img_src_url = scrape_image(html_file, web_page)
+
+# display image using Pillow package
+response = requests.get(img_src_url)
+img = Image.open(BytesIO(response.content))
+img.show()
+
 # dictionary to display headers, word count and ...
 my_dict = {"Headers": headers,
-           "Word occurrences": occurrences}
+           "Word occurrences": occurrences,
+           "Image source": img_src_url}
 
-print(my_dict)
+# pretty print dictionary using pprint package
+pprint.pprint(my_dict)
