@@ -18,30 +18,26 @@ def ssh_connection(ip):
     """
     :param: ip: ip address of host device
 
-    :return:
+    :return: none
     """
     try:
-        username = "cohogain"
-        password = "Oberc1999?"
-
+        # connect to host VM using paramiko package
         print("Establishing a connection...")
         session = paramiko.SSHClient()
         session.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        session.connect(ip.rstrip("\n)"), username=username, password=password)
+        session.connect(ip.rstrip("\n)"), username=input("Enter username:\t\t"), password=input("Enter password:\t\t"))
+        print("Connection Successful.")
         connection = session.invoke_shell()
         connection.send("echo 'Connection successful' > connection_success.txt\n")
         time.sleep(1)
 
-        vm_output = connection.recv(65535)
-        if re.search(b"% Invalid input", vm_output):
-            print("There was an error on vm {}".format(ip))
-        else:
-            print("Command successfully executed on {}".format(ip))
-
         session.close()
+
+    # catch authentication error
     except paramiko.AuthenticationException:
-        print("Authentication Error")
+        print("Authentication Error.")
 
 
 if __name__ == '__main__':
+    # connect to VM IP address using by calling ssh_connection function
     ssh_connection("192.168.0.59")
